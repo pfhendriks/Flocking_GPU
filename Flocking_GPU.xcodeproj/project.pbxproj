@@ -1,0 +1,667 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BD49F24425401F5100E38130 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F24325401F5100E38130 /* AppDelegate.swift */; };
+		BD49F24625401F5100E38130 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F24525401F5100E38130 /* ViewController.swift */; };
+		BD49F24825401F5200E38130 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD49F24725401F5200E38130 /* Assets.xcassets */; };
+		BD49F24B25401F5200E38130 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD49F24925401F5200E38130 /* Main.storyboard */; };
+		BD49F25725401F5200E38130 /* Flocking_GPUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F25625401F5200E38130 /* Flocking_GPUTests.swift */; };
+		BD49F26225401F5200E38130 /* Flocking_GPUUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F26125401F5200E38130 /* Flocking_GPUUITests.swift */; };
+		BD49F2852540207500E38130 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F2842540207500E38130 /* Grid.swift */; };
+		BD49F28A254020BE00E38130 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F289254020BE00E38130 /* Renderer.swift */; };
+		BD49F28F2540211100E38130 /* ScenePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F28E2540211100E38130 /* ScenePreference.swift */; };
+		BD49F2962540215E00E38130 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F2932540215E00E38130 /* Timer.swift */; };
+		BD49F2972540215E00E38130 /* Flock.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F2942540215E00E38130 /* Flock.swift */; };
+		BD49F2982540215E00E38130 /* Unit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F2952540215E00E38130 /* Unit.swift */; };
+		BD49F29D2540224E00E38130 /* InputHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F29C2540224D00E38130 /* InputHandler.swift */; };
+		BD49F2A3254023D200E38130 /* GridShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = BD49F2A1254023D200E38130 /* GridShaders.metal */; };
+		BD49F2A4254023D200E38130 /* UnitShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = BD49F2A2254023D200E38130 /* UnitShader.metal */; };
+		BD49F2A92540249900E38130 /* NewFish.obj in Resources */ = {isa = PBXBuildFile; fileRef = BD49F2A82540249900E38130 /* NewFish.obj */; };
+		BD49F2B1254024E100E38130 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F2B0254024E100E38130 /* CameraController.swift */; };
+		BDD9AEC32540470000DC8F90 /* FlockingComputeShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = BDD9AEC22540470000DC8F90 /* FlockingComputeShader.metal */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BD49F25325401F5200E38130 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BD49F23825401F5100E38130 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BD49F23F25401F5100E38130;
+			remoteInfo = Flocking_GPU;
+		};
+		BD49F25E25401F5200E38130 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BD49F23825401F5100E38130 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BD49F23F25401F5100E38130;
+			remoteInfo = Flocking_GPU;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BD49F24025401F5100E38130 /* Flocking_GPU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flocking_GPU.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD49F24325401F5100E38130 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		BD49F24525401F5100E38130 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		BD49F24725401F5200E38130 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BD49F24A25401F5200E38130 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BD49F24C25401F5200E38130 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BD49F24D25401F5200E38130 /* Flocking_GPU.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Flocking_GPU.entitlements; sourceTree = "<group>"; };
+		BD49F25225401F5200E38130 /* Flocking_GPUTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Flocking_GPUTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD49F25625401F5200E38130 /* Flocking_GPUTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flocking_GPUTests.swift; sourceTree = "<group>"; };
+		BD49F25825401F5200E38130 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BD49F25D25401F5200E38130 /* Flocking_GPUUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Flocking_GPUUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD49F26125401F5200E38130 /* Flocking_GPUUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flocking_GPUUITests.swift; sourceTree = "<group>"; };
+		BD49F26325401F5200E38130 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BD49F2842540207500E38130 /* Grid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		BD49F289254020BE00E38130 /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		BD49F28E2540211100E38130 /* ScenePreference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScenePreference.swift; sourceTree = "<group>"; };
+		BD49F2932540215E00E38130 /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		BD49F2942540215E00E38130 /* Flock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flock.swift; sourceTree = "<group>"; };
+		BD49F2952540215E00E38130 /* Unit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Unit.swift; sourceTree = "<group>"; };
+		BD49F29C2540224D00E38130 /* InputHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputHandler.swift; sourceTree = "<group>"; };
+		BD49F2A1254023D200E38130 /* GridShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = GridShaders.metal; sourceTree = "<group>"; };
+		BD49F2A2254023D200E38130 /* UnitShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = UnitShader.metal; sourceTree = "<group>"; };
+		BD49F2A82540249900E38130 /* NewFish.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NewFish.obj; sourceTree = "<group>"; };
+		BD49F2B0254024E100E38130 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		BDD9AEC22540470000DC8F90 /* FlockingComputeShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = FlockingComputeShader.metal; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BD49F23D25401F5100E38130 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BD49F24F25401F5200E38130 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BD49F25A25401F5200E38130 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BD49F23725401F5100E38130 = {
+			isa = PBXGroup;
+			children = (
+				BD49F24225401F5100E38130 /* Flocking_GPU */,
+				BD49F25525401F5200E38130 /* Flocking_GPUTests */,
+				BD49F26025401F5200E38130 /* Flocking_GPUUITests */,
+				BD49F24125401F5100E38130 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BD49F24125401F5100E38130 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BD49F24025401F5100E38130 /* Flocking_GPU.app */,
+				BD49F25225401F5200E38130 /* Flocking_GPUTests.xctest */,
+				BD49F25D25401F5200E38130 /* Flocking_GPUUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BD49F24225401F5100E38130 /* Flocking_GPU */ = {
+			isa = PBXGroup;
+			children = (
+				BD49F24C25401F5200E38130 /* Info.plist */,
+				BD49F2B62540274000E38130 /* Core */,
+				BD49F2B72540274C00E38130 /* General */,
+				BD49F2B82540277100E38130 /* Models */,
+				BD49F2B52540272300E38130 /* Shaders */,
+				BD49F2B9254027A800E38130 /* Support */,
+			);
+			path = Flocking_GPU;
+			sourceTree = "<group>";
+		};
+		BD49F25525401F5200E38130 /* Flocking_GPUTests */ = {
+			isa = PBXGroup;
+			children = (
+				BD49F25625401F5200E38130 /* Flocking_GPUTests.swift */,
+				BD49F25825401F5200E38130 /* Info.plist */,
+			);
+			path = Flocking_GPUTests;
+			sourceTree = "<group>";
+		};
+		BD49F26025401F5200E38130 /* Flocking_GPUUITests */ = {
+			isa = PBXGroup;
+			children = (
+				BD49F26125401F5200E38130 /* Flocking_GPUUITests.swift */,
+				BD49F26325401F5200E38130 /* Info.plist */,
+			);
+			path = Flocking_GPUUITests;
+			sourceTree = "<group>";
+		};
+		BD49F2B52540272300E38130 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				BD49F2A1254023D200E38130 /* GridShaders.metal */,
+				BD49F2A2254023D200E38130 /* UnitShader.metal */,
+				BDD9AEC22540470000DC8F90 /* FlockingComputeShader.metal */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
+		BD49F2B62540274000E38130 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				BD49F289254020BE00E38130 /* Renderer.swift */,
+				BD49F2942540215E00E38130 /* Flock.swift */,
+				BD49F2952540215E00E38130 /* Unit.swift */,
+				BD49F2842540207500E38130 /* Grid.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		BD49F2B72540274C00E38130 /* General */ = {
+			isa = PBXGroup;
+			children = (
+				BD49F24D25401F5200E38130 /* Flocking_GPU.entitlements */,
+				BD49F24325401F5100E38130 /* AppDelegate.swift */,
+				BD49F24725401F5200E38130 /* Assets.xcassets */,
+				BD49F24925401F5200E38130 /* Main.storyboard */,
+			);
+			path = General;
+			sourceTree = "<group>";
+		};
+		BD49F2B82540277100E38130 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BD49F2A82540249900E38130 /* NewFish.obj */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		BD49F2B9254027A800E38130 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				BD49F2B0254024E100E38130 /* CameraController.swift */,
+				BD49F2932540215E00E38130 /* Timer.swift */,
+				BD49F29C2540224D00E38130 /* InputHandler.swift */,
+				BD49F24525401F5100E38130 /* ViewController.swift */,
+				BD49F28E2540211100E38130 /* ScenePreference.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BD49F23F25401F5100E38130 /* Flocking_GPU */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BD49F26625401F5200E38130 /* Build configuration list for PBXNativeTarget "Flocking_GPU" */;
+			buildPhases = (
+				BD49F23C25401F5100E38130 /* Sources */,
+				BD49F23D25401F5100E38130 /* Frameworks */,
+				BD49F23E25401F5100E38130 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Flocking_GPU;
+			productName = Flocking_GPU;
+			productReference = BD49F24025401F5100E38130 /* Flocking_GPU.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BD49F25125401F5200E38130 /* Flocking_GPUTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BD49F26925401F5200E38130 /* Build configuration list for PBXNativeTarget "Flocking_GPUTests" */;
+			buildPhases = (
+				BD49F24E25401F5200E38130 /* Sources */,
+				BD49F24F25401F5200E38130 /* Frameworks */,
+				BD49F25025401F5200E38130 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BD49F25425401F5200E38130 /* PBXTargetDependency */,
+			);
+			name = Flocking_GPUTests;
+			productName = Flocking_GPUTests;
+			productReference = BD49F25225401F5200E38130 /* Flocking_GPUTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		BD49F25C25401F5200E38130 /* Flocking_GPUUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BD49F26C25401F5200E38130 /* Build configuration list for PBXNativeTarget "Flocking_GPUUITests" */;
+			buildPhases = (
+				BD49F25925401F5200E38130 /* Sources */,
+				BD49F25A25401F5200E38130 /* Frameworks */,
+				BD49F25B25401F5200E38130 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BD49F25F25401F5200E38130 /* PBXTargetDependency */,
+			);
+			name = Flocking_GPUUITests;
+			productName = Flocking_GPUUITests;
+			productReference = BD49F25D25401F5200E38130 /* Flocking_GPUUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BD49F23825401F5100E38130 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1210;
+				LastUpgradeCheck = 1210;
+				TargetAttributes = {
+					BD49F23F25401F5100E38130 = {
+						CreatedOnToolsVersion = 12.1;
+					};
+					BD49F25125401F5200E38130 = {
+						CreatedOnToolsVersion = 12.1;
+						TestTargetID = BD49F23F25401F5100E38130;
+					};
+					BD49F25C25401F5200E38130 = {
+						CreatedOnToolsVersion = 12.1;
+						TestTargetID = BD49F23F25401F5100E38130;
+					};
+				};
+			};
+			buildConfigurationList = BD49F23B25401F5100E38130 /* Build configuration list for PBXProject "Flocking_GPU" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BD49F23725401F5100E38130;
+			productRefGroup = BD49F24125401F5100E38130 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BD49F23F25401F5100E38130 /* Flocking_GPU */,
+				BD49F25125401F5200E38130 /* Flocking_GPUTests */,
+				BD49F25C25401F5200E38130 /* Flocking_GPUUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BD49F23E25401F5100E38130 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD49F2A92540249900E38130 /* NewFish.obj in Resources */,
+				BD49F24825401F5200E38130 /* Assets.xcassets in Resources */,
+				BD49F24B25401F5200E38130 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BD49F25025401F5200E38130 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BD49F25B25401F5200E38130 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BD49F23C25401F5100E38130 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD49F24625401F5100E38130 /* ViewController.swift in Sources */,
+				BD49F2962540215E00E38130 /* Timer.swift in Sources */,
+				BD49F2982540215E00E38130 /* Unit.swift in Sources */,
+				BD49F2A4254023D200E38130 /* UnitShader.metal in Sources */,
+				BD49F24425401F5100E38130 /* AppDelegate.swift in Sources */,
+				BD49F2A3254023D200E38130 /* GridShaders.metal in Sources */,
+				BD49F2B1254024E100E38130 /* CameraController.swift in Sources */,
+				BD49F28A254020BE00E38130 /* Renderer.swift in Sources */,
+				BD49F2972540215E00E38130 /* Flock.swift in Sources */,
+				BD49F2852540207500E38130 /* Grid.swift in Sources */,
+				BD49F28F2540211100E38130 /* ScenePreference.swift in Sources */,
+				BDD9AEC32540470000DC8F90 /* FlockingComputeShader.metal in Sources */,
+				BD49F29D2540224E00E38130 /* InputHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BD49F24E25401F5200E38130 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD49F25725401F5200E38130 /* Flocking_GPUTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BD49F25925401F5200E38130 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD49F26225401F5200E38130 /* Flocking_GPUUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BD49F25425401F5200E38130 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BD49F23F25401F5100E38130 /* Flocking_GPU */;
+			targetProxy = BD49F25325401F5200E38130 /* PBXContainerItemProxy */;
+		};
+		BD49F25F25401F5200E38130 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BD49F23F25401F5100E38130 /* Flocking_GPU */;
+			targetProxy = BD49F25E25401F5200E38130 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BD49F24925401F5200E38130 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BD49F24A25401F5200E38130 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BD49F26425401F5200E38130 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		BD49F26525401F5200E38130 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		BD49F26725401F5200E38130 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Flocking_GPU/Flocking_GPU.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Flocking_GPU/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "-.Flocking-GPU";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		BD49F26825401F5200E38130 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Flocking_GPU/Flocking_GPU.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Flocking_GPU/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "-.Flocking-GPU";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		BD49F26A25401F5200E38130 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Flocking_GPUTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "-.Flocking-GPUTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Flocking_GPU.app/Contents/MacOS/Flocking_GPU";
+			};
+			name = Debug;
+		};
+		BD49F26B25401F5200E38130 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Flocking_GPUTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "-.Flocking-GPUTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Flocking_GPU.app/Contents/MacOS/Flocking_GPU";
+			};
+			name = Release;
+		};
+		BD49F26D25401F5200E38130 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Flocking_GPUUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "-.Flocking-GPUUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = Flocking_GPU;
+			};
+			name = Debug;
+		};
+		BD49F26E25401F5200E38130 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Flocking_GPUUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "-.Flocking-GPUUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = Flocking_GPU;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BD49F23B25401F5100E38130 /* Build configuration list for PBXProject "Flocking_GPU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BD49F26425401F5200E38130 /* Debug */,
+				BD49F26525401F5200E38130 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BD49F26625401F5200E38130 /* Build configuration list for PBXNativeTarget "Flocking_GPU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BD49F26725401F5200E38130 /* Debug */,
+				BD49F26825401F5200E38130 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BD49F26925401F5200E38130 /* Build configuration list for PBXNativeTarget "Flocking_GPUTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BD49F26A25401F5200E38130 /* Debug */,
+				BD49F26B25401F5200E38130 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BD49F26C25401F5200E38130 /* Build configuration list for PBXNativeTarget "Flocking_GPUUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BD49F26D25401F5200E38130 /* Debug */,
+				BD49F26E25401F5200E38130 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BD49F23825401F5100E38130 /* Project object */;
+}
