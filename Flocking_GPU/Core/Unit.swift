@@ -54,9 +54,6 @@ class Unit {
 	var accSeparation =	SIMD3<Float>(0, 0, 0)
 	var accCenter =		SIMD3<Float>(0, 0, 0)
 	
-	var positionOfNeighbors = SIMD3<Float>( 0, 0,0)
-	var velocityOfNeighbors = SIMD3<Float>( 0, 0,0)
-	
 	var minSpeed : Float				// Minimum speed of the unit
 	var maxSpeed : Float				// Maximum speed of the unit
 	
@@ -127,27 +124,31 @@ class Unit {
 		Pos += Vel*deltaTime
 		
 		// Update the velocity of the unit as a result of the overall accelleration
-		Acc = accCohesion + accAlignment + accSeparation + accCenter
+//		Acc = accCohesion + accAlignment + accSeparation + accCenter
 
 		let l1 = simd_length(Vel)
 		let a1 = Vel + Acc * deltaTime
 		let l2 = simd_length(a1)
 		
-		Vel = a1 * (l1/l2)
+		var VelNew = a1 * (l1/l2)
 //		Vel = Vel + Acc * deltaTime
 
 		// Check whether the velocity is withing the Min-Max range
 		let maxSpeedSqrt = maxSpeed * maxSpeed
 		let minSpeedSqrt = minSpeed * minSpeed
-		let velSqrt = simd_length_squared(Vel)
-		if (velSqrt > maxSpeedSqrt) { Vel = maxSpeed * simd_normalize(Vel) }
-		if (velSqrt < minSpeedSqrt) { Vel = minSpeed * simd_normalize(Vel) }
+		let velSqrt = simd_length_squared(VelNew)
+		if (velSqrt > maxSpeedSqrt) { VelNew = maxSpeed * simd_normalize(VelNew) }
+		if (velSqrt < minSpeedSqrt) { VelNew = minSpeed * simd_normalize(VelNew) }
 
+		Vel = VelNew
+		
 		// Reset all accellrations for the next cycle
 		accCohesion =	SIMD3<Float>(0, 0, 0)
 		accAlignment =	SIMD3<Float>(0, 0, 0)
 		accSeparation =	SIMD3<Float>(0, 0, 0)
 		accCenter =		SIMD3<Float>(0, 0, 0)
+//		Acc = SIMD3<Float>(0, 0, 0)
+		
 	}
 	
 		

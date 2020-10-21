@@ -11,6 +11,20 @@ import Metal
 import MetalKit
 import simd
 
+struct ComputeUniforms {
+	//
+	var numberOfUnits : Int
+	var viewAngle : Float
+	var viewRadius : Float
+	var separationDistance : Float
+	var separationStrength : Float
+	var cohesionStrength : Float
+	var alignmentStrength : Float
+	var maxDistanceFromCenterOfGridSqrd : Float
+	var centerPullStrength : Float
+	var maxDistanceFromCenterOfFlockSqrd : Float
+	var centerOfFlockPullStrength : Float
+};
 
 class Flock {
 	var numberOfUnits : Int = 1
@@ -27,7 +41,7 @@ class Flock {
 
 	// Set parameters for field of view for our units
 	let viewAngle = cos(120 * Float.pi / 180)
-	var viewRadius : Float = 1.2
+	var viewRadius : Float = 3
 
 	var cohesionStrength : Float = 8
 	var alignmentStrength : Float = 8
@@ -35,12 +49,12 @@ class Flock {
 	var separationDistance : Float = 1.0
 
 	//
-	var centerPullStrength : Float = 0.05	// Factor to scale the pull toward the center of our grid
+	var centerPullStrength : Float = 0.00005	// Factor to scale the pull toward the center of our grid
 	var maxDistanceFromCenterOfGrid : Float = 1
 	let maxDistanceFromCenterOfGridSqrd : Float
 
 	//
-	var centerOfFlockPullStrength : Float = 0.05	// Factor to scale the pull toward the flock center
+	var centerOfFlockPullStrength : Float = 0.00005	// Factor to scale the pull toward the flock center
 	var maxDistanceFromCenterOfFlock : Float = 0.0
 	let maxDistanceFromCenterOfFlockSqrd : Float
 
@@ -55,6 +69,13 @@ class Flock {
 
 	var computeState: MTLComputePipelineState!
 
+	var positionArray     : [SIMD3<Float>] = []
+	var velocityArray     : [SIMD3<Float>] = []
+
+	var positionBuffer     : MTLBuffer!
+	var velocityBuffer     : MTLBuffer!
+	var accelerationBuffer : MTLBuffer!
+
 	var perInstanceVertexUniforms : [UnitPerInstanceVertexUniform]!
 	var perInstanceVertexUniformsBuffer : MTLBuffer!
 
@@ -64,26 +85,17 @@ class Flock {
 	
 	var time : Float = 0
 	
+	var trail1 : Trail!
+	
+	
 	//MARK: INITIALIZING
 	init (view: MTKView, device: MTLDevice, numberOfMembersInFlock : Int) {
-		
-		self.device = device
-		
 		// Initialize the parameters for our calculations
-		maxDistanceFromCenterOfGridSqrd = maxDistanceFromCenterOfGrid * maxDistanceFromCenterOfGrid
+		maxDistanceFromCenterOfGridSqrd  = maxDistanceFromCenterOfGrid  * maxDistanceFromCenterOfGrid
 		maxDistanceFromCenterOfFlockSqrd = maxDistanceFromCenterOfFlock * maxDistanceFromCenterOfFlock
-		
-		// Initialize the units in our flock
-		numberOfUnits = numberOfMembersInFlock
-		for i in 0...(numberOfUnits-1) {
-			let P = SIMD3<Float>( Float.random(in: -5.0 ..< 5.0), Float.random(in: -5.0 ..< 5.0), Float.random(in: -5.0 ..< 5.0) )
-			let V = 3*simd_normalize( SIMD3<Float>( Float.random(in: -1.0 ..< 1.0), Float.random(in: -1.0 ..< 1.0), Float.random(in: -1.0 ..< 1.0) ) )
-			let minSpeed = Float.random(in: 0.3 ..< 0.6)
-			let maxSpeed = Float.random(in: 5.0 ..< 20.0)
-			let newUnit = Unit( Position : P, Velocity : V, MinSpeed : minSpeed, MaxSpeed : maxSpeed, ID : i )
-			unit.append(newUnit)
-		}
 
+		// Setup Metal
+		self.device = device
 		let defaultLibrary = device.makeDefaultLibrary()!
 		let unitVertexProgram   = defaultLibrary.makeFunction(name: "Instanced_unit_vertex_main")
 		let unitFragmentProgram = defaultLibrary.makeFunction(name: "unit_fragment_main")
@@ -114,9 +126,27 @@ class Flock {
 		unitPipelineStateDescriptor.vertexDescriptor = mtlVertexDescriptor
 		unitPipelineState = try! device.makeRenderPipelineState(descriptor: unitPipelineStateDescriptor)
 		
+		self.numberOfUnits = numberOfMembersInFlock
 		CreateInstanceBuffers()
+				
+		// Initialize the units in our flock
+		for i in 0...(numberOfMembersInFlock - 1) {
+			let P = SIMD3<Float>( Float.random(in: -5.0 ..< 5.0), Float.random(in: -5.0 ..< 5.0), Float.random(in: -5.0 ..< 5.0) )
+			let V = 3*simd_normalize( SIMD3<Float>( Float.random(in: -1.0 ..< 1.0), Float.random(in: -1.0 ..< 1.0), Float.random(in: -1.0 ..< 1.0) ) )
+			let minSpeed = Float.random(in: 0.3 ..< 0.6)
+			let maxSpeed = Float.random(in: 5.0 ..< 20.0)
+			let newUnit = Unit( Position : P, Velocity : V, MinSpeed : minSpeed, MaxSpeed : maxSpeed, ID : i )
+			unit.append(newUnit)
+			
+			//
+			positionArray.append(P)
+			velocityArray.append(V)
+		}
 		
-		// Load out compute Shader
+		trail1 = Trail(metalView: view, metalDevice: device, x0: unit[0].Pos.x, y0: unit[0].Pos.y, z0: unit[0].Pos.z, dColor: SIMD3<Float>(1.0, 0.0, 0.0) )
+	
+
+		// Load our compute Shader
 		let computeFn = defaultLibrary.makeFunction(name: "Flocking")!
 		computeState = try! device.makeComputePipelineState(function: computeFn)
 		
@@ -127,7 +157,6 @@ class Flock {
 		printShortcuts()
 	}
 	
-
 	func CreateInstanceBuffers() {
 		//
 		perInstanceVertexUniforms = [UnitPerInstanceVertexUniform](repeatElement(UnitPerInstanceVertexUniform(), count: numberOfUnits))
@@ -152,6 +181,13 @@ class Flock {
 		let light0 = Light(worldPosition: SIMD3<Float>( 4, 20, 4), color: SIMD3<Float>( 0.8, 0.8, 0.8))
 		let light1 = Light(worldPosition: SIMD3<Float>( 0, 8,-4), color: SIMD3<Float>( 0.6, 0.6, 0.6))
 		let light2 = Light(worldPosition: SIMD3<Float>(-4, 4, 0), color: SIMD3<Float>( 0.6, 0.6, 0.6))
+
+		//
+		if (ScenePreference.drawTrail) {
+			trail1.viewMatrix = viewMatrix
+			trail1.projectionMatrix = projectionMatrix
+			trail1.Draw(commandEncoder: commandEncoder)
+		}
 
 		// do all our setup which is the same for all the units
 		commandEncoder.setRenderPipelineState(unitPipelineState)
@@ -183,28 +219,85 @@ class Flock {
 											 instanceCount: numberOfUnits)
 	}
 	
-
-	func Update(deltaTime: Float) {
+//	func Update(deltaTime: Float, computeEncoder: MTLComputeCommandEncoder) {
+	func Update(deltaTime: Float, commandQueue: MTLCommandQueue) {
 		// Check for key input
 		CheckKeyInput()
 		
 		// Calculate total time elapsed
 		time += deltaTime
-
-		// Determine the accellerations on each unit in the flock
+		
+		//
 		for i in 0...(numberOfUnits-1) {
-			// Calculate the Flocking accelerations for unit[i]
-			if (ScenePreference.searchMethod == 1) { CalculateFlockingAccelerationsBasic(i : i) }
-			
-			// Calculate the accelaration to center of flock and grid for unit[i]
-			CalculateCenterAccelerations(i: i)
+			//
+			positionArray[i] = unit[i].Pos
+			velocityArray[i] = unit[i].Vel
+		}
 
-			// Update unit[i] with new time and accelerations
+		let commandBuffer = commandQueue.makeCommandBuffer()!
+		let computeEncoder = commandBuffer.makeComputeCommandEncoder()!
+
+		//
+		computeEncoder.setComputePipelineState(computeState)
+
+
+		positionBuffer = device.makeBuffer(bytes: positionArray,
+										   length: MemoryLayout<SIMD3<Float>>.size * numberOfUnits,
+										   options: .storageModeShared)
+
+		velocityBuffer = device.makeBuffer(bytes: velocityArray,
+										   length: MemoryLayout<SIMD3<Float>>.size * numberOfUnits,
+										   options: .storageModeShared)
+		
+		accelerationBuffer = device.makeBuffer(length: MemoryLayout<SIMD3<Float>>.size * numberOfUnits,
+											   options: .storageModeShared)
+
+		
+		
+		computeEncoder.setBuffer(positionBuffer,     offset: 0, index: 0)
+		computeEncoder.setBuffer(velocityBuffer,     offset: 0, index: 1)
+		computeEncoder.setBuffer(accelerationBuffer, offset: 0, index: 2)
+
+		var computeUniforms = ComputeUniforms(numberOfUnits: numberOfUnits,
+											  viewAngle: viewAngle,
+											  viewRadius: viewRadius,
+											  separationDistance: separationDistance,
+											  separationStrength: separationStrength,
+											  cohesionStrength: cohesionStrength,
+											  alignmentStrength: alignmentStrength,
+											  maxDistanceFromCenterOfGridSqrd: maxDistanceFromCenterOfGridSqrd,
+											  centerPullStrength: centerPullStrength,
+											  maxDistanceFromCenterOfFlockSqrd: maxDistanceFromCenterOfFlockSqrd,
+											  centerOfFlockPullStrength: centerOfFlockPullStrength)
+		
+		computeEncoder.setBytes(&computeUniforms, length: MemoryLayout<ComputeUniforms>.size, index: 3)
+
+		let threadsPerGrid = MTLSize(width: numberOfUnits, height: 1, depth: 1)
+		let maxThreadPerThreadgroup = computeState.maxTotalThreadsPerThreadgroup
+		let threadsPerThreadgroup = MTLSize(width: maxThreadPerThreadgroup, height: 1, depth: 1)
+		computeEncoder.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+		
+		computeEncoder.endEncoding()
+		commandBuffer.commit()
+		commandBuffer.waitUntilCompleted()
+
+		var resultBufferPointer = accelerationBuffer?.contents().bindMemory(to: SIMD3<Float>.self, capacity: MemoryLayout<Float>.size * numberOfUnits)
+		for i in 0...(numberOfUnits-1) {
+			let accel = resultBufferPointer!.pointee
+			resultBufferPointer = resultBufferPointer?.advanced(by: 1)
+
+			// store our calculated acceleration and update the unit over this time interval
+			unit[i].Acc = accel
 			unit[i].Update(deltaTime: deltaTime)
+		}
+		
+		// update our trail on the first unit
+		if (ScenePreference.drawTrail) {
+			trail1.AddVertexToTrail(newVertex: unit[0].Pos)
 		}
 	}
 	
-	
+		
 	func CalculateFlockingAccelerationsBasic(i : Int) {
 				// Initialize
 				var N = 0

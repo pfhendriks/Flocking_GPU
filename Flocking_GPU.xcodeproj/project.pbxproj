@@ -25,6 +25,8 @@
 		BD49F2A92540249900E38130 /* NewFish.obj in Resources */ = {isa = PBXBuildFile; fileRef = BD49F2A82540249900E38130 /* NewFish.obj */; };
 		BD49F2B1254024E100E38130 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F2B0254024E100E38130 /* CameraController.swift */; };
 		BDD9AEC32540470000DC8F90 /* FlockingComputeShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = BDD9AEC22540470000DC8F90 /* FlockingComputeShader.metal */; };
+		BDD9AECB2540F1B600DC8F90 /* Shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = BDD9AEC92540F1B600DC8F90 /* Shader.metal */; };
+		BDD9AECC2540F1B600DC8F90 /* Trail.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD9AECA2540F1B600DC8F90 /* Trail.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +72,8 @@
 		BD49F2A82540249900E38130 /* NewFish.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NewFish.obj; sourceTree = "<group>"; };
 		BD49F2B0254024E100E38130 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		BDD9AEC22540470000DC8F90 /* FlockingComputeShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = FlockingComputeShader.metal; sourceTree = "<group>"; };
+		BDD9AEC92540F1B600DC8F90 /* Shader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shader.metal; sourceTree = "<group>"; };
+		BDD9AECA2540F1B600DC8F90 /* Trail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Trail.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +155,7 @@
 		BD49F2B52540272300E38130 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				BDD9AEC92540F1B600DC8F90 /* Shader.metal */,
 				BD49F2A1254023D200E38130 /* GridShaders.metal */,
 				BD49F2A2254023D200E38130 /* UnitShader.metal */,
 				BDD9AEC22540470000DC8F90 /* FlockingComputeShader.metal */,
@@ -161,6 +166,7 @@
 		BD49F2B62540274000E38130 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				BDD9AECA2540F1B600DC8F90 /* Trail.swift */,
 				BD49F289254020BE00E38130 /* Renderer.swift */,
 				BD49F2942540215E00E38130 /* Flock.swift */,
 				BD49F2952540215E00E38130 /* Unit.swift */,
@@ -331,6 +337,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BD49F24625401F5100E38130 /* ViewController.swift in Sources */,
+				BDD9AECC2540F1B600DC8F90 /* Trail.swift in Sources */,
 				BD49F2962540215E00E38130 /* Timer.swift in Sources */,
 				BD49F2982540215E00E38130 /* Unit.swift in Sources */,
 				BD49F2A4254023D200E38130 /* UnitShader.metal in Sources */,
@@ -342,6 +349,7 @@
 				BD49F2852540207500E38130 /* Grid.swift in Sources */,
 				BD49F28F2540211100E38130 /* ScenePreference.swift in Sources */,
 				BDD9AEC32540470000DC8F90 /* FlockingComputeShader.metal in Sources */,
+				BDD9AECB2540F1B600DC8F90 /* Shader.metal in Sources */,
 				BD49F29D2540224E00E38130 /* InputHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

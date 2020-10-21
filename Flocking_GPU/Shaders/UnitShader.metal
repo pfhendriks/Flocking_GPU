@@ -95,7 +95,7 @@ fragment float4 unit_fragment_main(UnitVertexOut fragmentIn [[stage_in]],
 								   sampler baseColorSampler [[sampler(0)]] )
 {
 	bool drawFog = true;
-	
+
     float3 baseColor = baseColorTexture.sample(baseColorSampler, fragmentIn.texCoords).rgb;
 	float  bumpColor = bumpColorTexture.sample(baseColorSampler, fragmentIn.texCoords).r;
 	float3 specularColor(1.0, 1.0, 1.0);

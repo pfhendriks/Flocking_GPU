@@ -23,20 +23,14 @@ class Renderer: NSObject, MTKViewDelegate {
 
 	var time : Float = 0
 
-	var timer = RunningTimer.init()
-
 	let grid : Grid
 
 	var flock : Flock
-	var numberOfMembersInFlock : Int = 60
+	var numberOfMembersInFlock : Int = 300
+		
+
 	
-	let targetFPS : Double = 60
-//	var stopAdding : Bool = false
-//	var unitsAdded : Bool = false
-//	var completeTuning : Bool = false
-	
-	//MARK: INITIALIZATION
-    // This is the initializer for the Renderer class.
+	// This is the initializer for the Renderer class.
     init(view: MTKView, device: MTLDevice) {
         self.device = device
         commandQueue = device.makeCommandQueue()!
@@ -66,17 +60,26 @@ class Renderer: NSObject, MTKViewDelegate {
 	}
 	
 
-	//MARK: DRAWING
     // mtkView will automatically call this function whenever it wants new content to be rendered.
     func draw(in view: MTKView) {
 		// Determine our Projection Matrix
 		let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
 		projectionMatrix = float4x4(perspectiveProjectionFov: Float.pi / 3, aspectRatio: aspectRatio, nearZ: 0.0, farZ: 100)
+
+		// Increase our time
+		let DT = 1 / Float(view.preferredFramesPerSecond)
+		time += DT
 		
-		update(view)
+		//
+		cameraWorldPosition = viewMatrix.inverse[3].xyz
 		
-        let commandBuffer = commandQueue.makeCommandBuffer()!
-		
+		// Update the flocking behavior unless paused
+		if(ScenePreference.pauseAnimation == false) {
+			flock.Update(deltaTime: DT, commandQueue: commandQueue)
+		}
+
+		let commandBuffer = commandQueue.makeCommandBuffer()!
+
         if let renderPassDescriptor = view.currentRenderPassDescriptor, let drawable = view.currentDrawable {
 			// clear the view with light-blue color
 			renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(ScenePreference.clearColor.x, ScenePreference.clearColor.y, ScenePreference.clearColor.z, 1.0)
@@ -101,31 +104,12 @@ class Renderer: NSObject, MTKViewDelegate {
 			// Present our new drawn screen
 			commandEncoder.endEncoding()
             commandBuffer.present(drawable)
-            commandBuffer.commit()
-        }
+			commandBuffer.commit()
+		}
     }
 
 	
-
-	func update(_ view: MTKView) {
-		let DT = 1 / Float(view.preferredFramesPerSecond)
-		time += DT
-
-		// Check if keys are pressed
-//		if(InputHandler.isKeyPressed(key: KEY_CODES.Key_G)) { drawGrid = !drawGrid }
-
-		// Update the flocking behavior unless paused
-		if(ScenePreference.pauseAnimation == false) {
-			flock.Update(deltaTime: DT)
-			
-		}
-		
-		//
-		cameraWorldPosition = viewMatrix.inverse[3].xyz
-	}
-
 	
-	//MARK: VIEW RESIZE
 	// mtkView will automatically call this function
     // whenever the size of the view changes (such as resizing the window).
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
