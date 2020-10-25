@@ -61,7 +61,7 @@ class Grid {
 				
 		// Determine the total vertex count in our buffer
 		vertexCount = ((divisionX+1)*(divisionZ+1) + (divisionY+1)*(divisionZ+1) + (divisionX+1)*(divisionY+1))*2
-		print("Total vertex count in Grid is \(vertexCount)")
+		print("Total vertex count in grid is \(vertexCount)")
 		
 		// Horizontal lines
 		for iz in 0...divisionZ {
@@ -119,10 +119,11 @@ class Grid {
 	func Draw(commandEncoder: MTLRenderCommandEncoder) {
 		//
 		commandEncoder.setRenderPipelineState(gridPipelineState)
+		
 		var vertexUniforms = GridVertexUniforms(projectionMatrix: projectionMatrix, viewMatrix: viewMatrix)
-		commandEncoder.setVertexBytes(&vertexUniforms, length: MemoryLayout<GridVertexUniforms>.size, index: 1)
-
 		var fragmentUniforms = GridFragmentUniforms(gridColor: gridColor)
+		
+		commandEncoder.setVertexBytes(  &vertexUniforms,   length: MemoryLayout<GridVertexUniforms>.size,   index: 1)
 		commandEncoder.setFragmentBytes(&fragmentUniforms, length: MemoryLayout<GridFragmentUniforms>.size, index: 0)
 
 		commandEncoder.setVertexBuffer(gridVertexBuffer, offset: 0, index: 0)

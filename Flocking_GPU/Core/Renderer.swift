@@ -25,10 +25,11 @@ class Renderer: NSObject, MTKViewDelegate {
 
 	let grid : Grid
 
-	var flock : Flock
-	var numberOfMembersInFlock : Int = 300
-		
+	let skyDome : SkyDome
 
+	var flock : Flock
+	var numberOfMembersInFlock : Int = 1000
+		
 	
 	// This is the initializer for the Renderer class.
     init(view: MTKView, device: MTLDevice) {
@@ -53,7 +54,10 @@ class Renderer: NSObject, MTKViewDelegate {
 		flock = Flock(view: view, device: device, numberOfMembersInFlock: numberOfMembersInFlock)
 
 		// Create our grid
-		grid = Grid(view: view, device: device, size: 10, division: 10)
+		grid = Grid(view: view, device: device, size: 20, division: 10)
+		
+		//
+		skyDome = SkyDome(view: view, device: device, radius: 1000, sectorCount: 36, stackCount: 36)
 		
 		//
 		super.init()
@@ -67,15 +71,15 @@ class Renderer: NSObject, MTKViewDelegate {
 		projectionMatrix = float4x4(perspectiveProjectionFov: Float.pi / 3, aspectRatio: aspectRatio, nearZ: 0.0, farZ: 100)
 
 		// Increase our time
-		let DT = 1 / Float(view.preferredFramesPerSecond)
-		time += DT
+		let DeltaTime = 1 / Float(view.preferredFramesPerSecond)
+		time += DeltaTime
 		
 		//
 		cameraWorldPosition = viewMatrix.inverse[3].xyz
 		
 		// Update the flocking behavior unless paused
 		if(ScenePreference.pauseAnimation == false) {
-			flock.Update(deltaTime: DT, commandQueue: commandQueue)
+			flock.Update(deltaTime: DeltaTime, commandQueue: commandQueue)
 		}
 
 		let commandBuffer = commandQueue.makeCommandBuffer()!
@@ -96,6 +100,10 @@ class Renderer: NSObject, MTKViewDelegate {
 				grid.Draw(commandEncoder: commandEncoder)
 			}
 			
+			skyDome.viewMatrix = viewMatrix
+			skyDome.projectionMatrix = projectionMatrix
+			skyDome.Draw(commandEncoder: commandEncoder)
+
 			// Draw our flocking unit
 			flock.viewMatrix = viewMatrix
 			flock.projectionMatrix = projectionMatrix

@@ -13,18 +13,21 @@ import simd
 
 struct ComputeUniforms {
 	//
-	var numberOfUnits : Int
-	var viewAngle : Float
-	var viewRadius : Float
-	var separationDistance : Float
-	var separationStrength : Float
-	var cohesionStrength : Float
-	var alignmentStrength : Float
-	var maxDistanceFromCenterOfGridSqrd : Float
-	var centerPullStrength : Float
-	var maxDistanceFromCenterOfFlockSqrd : Float
-	var centerOfFlockPullStrength : Float
+	var numberOfUnits : Int32
+	var viewAngle : Float32
+	var viewRadius : Float32
+	var separationDistance : Float32
+	var separationStrength : Float32
+	var cohesionStrength : Float32
+	var alignmentStrength : Float32
+	var maxDistanceFromCenterOfGridSqrd : Float32
+	var centerPullStrength : Float32
+	var maxDistanceFromCenterOfFlockSqrd : Float32
+	var centerOfFlockPullStrength : Float32
+	var deltaTime : Float32
+	var centerOfFlock: SIMD3<Float32>
 };
+
 
 class Flock {
 	var numberOfUnits : Int = 1
@@ -34,28 +37,26 @@ class Flock {
 	var W : Float = 0.25
 
 	// Average position of all our units int he floak
-	var centerOfFlock = SIMD3<Float>(0, 0, 0)
+	var centerOfFlock =    SIMD3<Float>(0, 0, 0)
 	var dimensionOfFlock = SIMD3<Float>(0, 0, 0)
-	var maxOfFlock = SIMD3<Float>(0, 0, 0)
-	var minOfFlock = SIMD3<Float>(0, 0, 0)
+	var maxOfFlock =       SIMD3<Float>(0, 0, 0)
+	var minOfFlock =       SIMD3<Float>(0, 0, 0)
 
 	// Set parameters for field of view for our units
 	let viewAngle = cos(120 * Float.pi / 180)
-	var viewRadius : Float = 3
+	var viewRadius : Float = 1.2
 
-	var cohesionStrength : Float = 8
-	var alignmentStrength : Float = 8
+	var cohesionStrength   : Float = 8
+	var alignmentStrength  : Float = 8
 	var separationStrength : Float = 8
 	var separationDistance : Float = 1.0
 
-	//
-	var centerPullStrength : Float = 0.00005	// Factor to scale the pull toward the center of our grid
-	var maxDistanceFromCenterOfGrid : Float = 1
+	var centerPullStrength              : Float = 0.05	// Factor to scale the pull toward the center of our grid
+	var maxDistanceFromCenterOfGrid     : Float = 1
 	let maxDistanceFromCenterOfGridSqrd : Float
-
-	//
-	var centerOfFlockPullStrength : Float = 0.00005	// Factor to scale the pull toward the flock center
-	var maxDistanceFromCenterOfFlock : Float = 0.0
+	
+	var centerOfFlockPullStrength        : Float = 0.025	// Factor to scale the pull toward the flock center
+	var maxDistanceFromCenterOfFlock     : Float = 0.0
 	let maxDistanceFromCenterOfFlockSqrd : Float
 
 	// Our Metal variables
@@ -71,10 +72,13 @@ class Flock {
 
 	var positionArray     : [SIMD3<Float>] = []
 	var velocityArray     : [SIMD3<Float>] = []
+	var maxVelocityArray  : [SIMD3<Float>] = []
 
 	var positionBuffer     : MTLBuffer!
 	var velocityBuffer     : MTLBuffer!
-	var accelerationBuffer : MTLBuffer!
+	var maxVelocityBuffer  : MTLBuffer!
+	var positionOutBuffer  : MTLBuffer!
+	var velocityOutBuffer  : MTLBuffer!
 
 	var perInstanceVertexUniforms : [UnitPerInstanceVertexUniform]!
 	var perInstanceVertexUniformsBuffer : MTLBuffer!
@@ -132,20 +136,22 @@ class Flock {
 		// Initialize the units in our flock
 		for i in 0...(numberOfMembersInFlock - 1) {
 			let P = SIMD3<Float>( Float.random(in: -5.0 ..< 5.0), Float.random(in: -5.0 ..< 5.0), Float.random(in: -5.0 ..< 5.0) )
-			let V = 3*simd_normalize( SIMD3<Float>( Float.random(in: -1.0 ..< 1.0), Float.random(in: -1.0 ..< 1.0), Float.random(in: -1.0 ..< 1.0) ) )
+			let V = 5.0 * simd_normalize( SIMD3<Float>( Float.random(in: -1.0 ..< 1.0), Float.random(in: -1.0 ..< 1.0), Float.random(in: -1.0 ..< 1.0) ) )
 			let minSpeed = Float.random(in: 0.3 ..< 0.6)
 			let maxSpeed = Float.random(in: 5.0 ..< 20.0)
+			let maxAccel = Float(8)
 			let newUnit = Unit( Position : P, Velocity : V, MinSpeed : minSpeed, MaxSpeed : maxSpeed, ID : i )
 			unit.append(newUnit)
 			
+			let Vmax = SIMD3<Float>(maxSpeed, minSpeed, maxAccel)
 			//
 			positionArray.append(P)
 			velocityArray.append(V)
+			maxVelocityArray.append(Vmax)
 		}
 		
 		trail1 = Trail(metalView: view, metalDevice: device, x0: unit[0].Pos.x, y0: unit[0].Pos.y, z0: unit[0].Pos.z, dColor: SIMD3<Float>(1.0, 0.0, 0.0) )
 	
-
 		// Load our compute Shader
 		let computeFn = defaultLibrary.makeFunction(name: "Flocking")!
 		computeState = try! device.makeComputePipelineState(function: computeFn)
@@ -177,10 +183,13 @@ class Flock {
 	func DrawInstanced(commandEncoder: MTLRenderCommandEncoder) {
 		cameraWorldPosition = viewMatrix.inverse[3].xyz
 
-		let ambientLightColor = SIMD3<Float>(0.05, 0.05, 0.05)
-		let light0 = Light(worldPosition: SIMD3<Float>( 4, 20, 4), color: SIMD3<Float>( 0.8, 0.8, 0.8))
-		let light1 = Light(worldPosition: SIMD3<Float>( 0, 8,-4), color: SIMD3<Float>( 0.6, 0.6, 0.6))
-		let light2 = Light(worldPosition: SIMD3<Float>(-4, 4, 0), color: SIMD3<Float>( 0.6, 0.6, 0.6))
+		let ambientLightColor = SIMD3<Float>(0.02, 0.02, 0.02)
+
+		let lv = Float(0.8)
+		
+		let light0 = Light(worldPosition: SIMD3<Float>( 0, 35, 0), color: SIMD3<Float>( lv, lv, lv) )
+		let light1 = Light(worldPosition: SIMD3<Float>( 5, 35, 5), color: SIMD3<Float>( lv, lv, lv) )
+		let light2 = Light(worldPosition: SIMD3<Float>(-5, 35, 5), color: SIMD3<Float>( lv, lv, lv) )
 
 		//
 		if (ScenePreference.drawTrail) {
@@ -218,8 +227,8 @@ class Flock {
 											 indexBufferOffset: submesh.indexBuffer.offset,
 											 instanceCount: numberOfUnits)
 	}
+
 	
-//	func Update(deltaTime: Float, computeEncoder: MTLComputeCommandEncoder) {
 	func Update(deltaTime: Float, commandQueue: MTLCommandQueue) {
 		// Check for key input
 		CheckKeyInput()
@@ -228,11 +237,15 @@ class Flock {
 		time += deltaTime
 		
 		//
+		centerOfFlock = SIMD3<Float>(0.0, 0.0, 0.0)
 		for i in 0...(numberOfUnits-1) {
-			//
 			positionArray[i] = unit[i].Pos
 			velocityArray[i] = unit[i].Vel
+
+			// calculate center of the flock location
+			centerOfFlock += unit[i].Pos;
 		}
+		centerOfFlock = centerOfFlock/Float(numberOfUnits)
 
 		let commandBuffer = commandQueue.makeCommandBuffer()!
 		let computeEncoder = commandBuffer.makeComputeCommandEncoder()!
@@ -249,29 +262,39 @@ class Flock {
 										   length: MemoryLayout<SIMD3<Float>>.size * numberOfUnits,
 										   options: .storageModeShared)
 		
-		accelerationBuffer = device.makeBuffer(length: MemoryLayout<SIMD3<Float>>.size * numberOfUnits,
-											   options: .storageModeShared)
+		maxVelocityBuffer = device.makeBuffer(bytes: maxVelocityArray,
+											  length: MemoryLayout<SIMD3<Float>>.size * numberOfUnits,
+											  options: .storageModeShared)
+
+		positionOutBuffer = device.makeBuffer(length: MemoryLayout<SIMD3<Float>>.size * numberOfUnits,
+											  options: .storageModeShared)
+
+		velocityOutBuffer = device.makeBuffer(length: MemoryLayout<SIMD3<Float>>.size * numberOfUnits,
+											  options: .storageModeShared)
 
 		
-		
-		computeEncoder.setBuffer(positionBuffer,     offset: 0, index: 0)
-		computeEncoder.setBuffer(velocityBuffer,     offset: 0, index: 1)
-		computeEncoder.setBuffer(accelerationBuffer, offset: 0, index: 2)
+		computeEncoder.setBuffer(positionBuffer,     offset: 0, index: 1)
+		computeEncoder.setBuffer(velocityBuffer,     offset: 0, index: 2)
+		computeEncoder.setBuffer(maxVelocityBuffer,  offset: 0, index: 3)
+		computeEncoder.setBuffer(positionOutBuffer,  offset: 0, index: 4)
+		computeEncoder.setBuffer(velocityOutBuffer,  offset: 0, index: 5)
 
-		var computeUniforms = ComputeUniforms(numberOfUnits: numberOfUnits,
-											  viewAngle: viewAngle,
-											  viewRadius: viewRadius,
-											  separationDistance: separationDistance,
-											  separationStrength: separationStrength,
-											  cohesionStrength: cohesionStrength,
-											  alignmentStrength: alignmentStrength,
-											  maxDistanceFromCenterOfGridSqrd: maxDistanceFromCenterOfGridSqrd,
-											  centerPullStrength: centerPullStrength,
-											  maxDistanceFromCenterOfFlockSqrd: maxDistanceFromCenterOfFlockSqrd,
-											  centerOfFlockPullStrength: centerOfFlockPullStrength)
-		
-		computeEncoder.setBytes(&computeUniforms, length: MemoryLayout<ComputeUniforms>.size, index: 3)
+		var computeUniforms = ComputeUniforms(numberOfUnits: Int32(numberOfUnits),
+											  viewAngle: Float32(viewAngle),
+											  viewRadius: Float32(viewRadius),
+											  separationDistance: Float32(separationDistance),
+											  separationStrength: Float32(separationStrength),
+											  cohesionStrength: Float32(cohesionStrength),
+											  alignmentStrength: Float32(alignmentStrength),
+											  maxDistanceFromCenterOfGridSqrd: Float32(maxDistanceFromCenterOfGridSqrd),
+											  centerPullStrength: Float32(centerPullStrength),
+											  maxDistanceFromCenterOfFlockSqrd: Float32(maxDistanceFromCenterOfFlockSqrd),
+											  centerOfFlockPullStrength: Float32(centerOfFlockPullStrength),
+											  deltaTime: Float32(deltaTime),
+											  centerOfFlock: centerOfFlock)
 
+		computeEncoder.setBytes(&computeUniforms, length: MemoryLayout<ComputeUniforms>.size, index: 0)
+	
 		let threadsPerGrid = MTLSize(width: numberOfUnits, height: 1, depth: 1)
 		let maxThreadPerThreadgroup = computeState.maxTotalThreadsPerThreadgroup
 		let threadsPerThreadgroup = MTLSize(width: maxThreadPerThreadgroup, height: 1, depth: 1)
@@ -281,14 +304,18 @@ class Flock {
 		commandBuffer.commit()
 		commandBuffer.waitUntilCompleted()
 
-		var resultBufferPointer = accelerationBuffer?.contents().bindMemory(to: SIMD3<Float>.self, capacity: MemoryLayout<Float>.size * numberOfUnits)
+		var positionOutBufferPointer  = positionOutBuffer?.contents().bindMemory(to: SIMD3<Float>.self, capacity: MemoryLayout<Float>.size * numberOfUnits)
+		var velocityOutBufferPointer  = velocityOutBuffer?.contents().bindMemory(to: SIMD3<Float>.self, capacity: MemoryLayout<Float>.size * numberOfUnits)
+		
 		for i in 0...(numberOfUnits-1) {
-			let accel = resultBufferPointer!.pointee
-			resultBufferPointer = resultBufferPointer?.advanced(by: 1)
-
-			// store our calculated acceleration and update the unit over this time interval
-			unit[i].Acc = accel
-			unit[i].Update(deltaTime: deltaTime)
+			let newPos = positionOutBufferPointer!.pointee
+			let newVel = velocityOutBufferPointer!.pointee
+			positionOutBufferPointer = positionOutBufferPointer?.advanced(by: 1)
+			velocityOutBufferPointer = velocityOutBufferPointer?.advanced(by: 1)
+			
+			// store our calculated positiona and velocity
+			unit[i].Pos = newPos
+			unit[i].Vel = newVel
 		}
 		
 		// update our trail on the first unit
@@ -428,11 +455,11 @@ class Flock {
 		}
 
 		if(InputHandler.isKeyPressed(key: KEY_CODES.Key_R)) {
-			separationDistance = separationDistance + 0.05
+			separationDistance = separationDistance + 0.005
 			if showParameterChanges { print("separationDistance = \(separationDistance)") }
 		}
 		if(InputHandler.isKeyPressed(key: KEY_CODES.Key_F)) {
-			separationDistance = separationDistance - 0.05
+			separationDistance = separationDistance - 0.005
 			if ( separationDistance < 0 ) { separationDistance = 0 }
 			if showParameterChanges { print("separationDistance = \(separationDistance)") }
 		}
@@ -479,11 +506,11 @@ class Flock {
 
 		// Change viewRadius
 		if(InputHandler.isKeyPressed(key: KEY_CODES.Key_Arrow_Up)) {
-			viewRadius = viewRadius + 0.1
+			viewRadius = viewRadius + 0.05
 			if showParameterChanges { print("viewRadius = \(viewRadius)") }
 		}
 		if(InputHandler.isKeyPressed(key: KEY_CODES.Key_Arrow_Down)) {
-			viewRadius = viewRadius - 0.1
+			viewRadius = viewRadius - 0.05
 			if ( viewRadius < 0 ) { viewRadius = 0 }
 			if showParameterChanges { print("viewRadius = \(viewRadius)") }
 		}
@@ -550,12 +577,12 @@ class Flock {
 		let textureLoader = MTKTextureLoader(device: device)
 		let options: [MTKTextureLoader.Option : Any] = [.origin : true, .allocateMipmaps : true, .generateMipmaps : true, .SRGB : true]
 
-		baseColorTexture = try? textureLoader.newTexture(name: "pez 02 difusa",
+		baseColorTexture = try? textureLoader.newTexture(name: "pez_02_difusa",
 														 scaleFactor: 1.0,
 														 bundle: nil,
 														 options: options)
 		
-		bumpColorTexture = try? textureLoader.newTexture(name: "pez 02  bump",
+		bumpColorTexture = try? textureLoader.newTexture(name: "pez_02_bump",
 														 scaleFactor: 1.0,
 														 bundle: nil,
 														 options: options)

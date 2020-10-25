@@ -106,16 +106,18 @@ fragment float4 unit_fragment_main(UnitVertexOut fragmentIn [[stage_in]],
 
 	float3 lightingColor(0, 0, 0);
 	float3 finalColor(0, 0, 0);
+	
+	lightingColor = 1 * uniforms.ambientLightColor * baseColor;
 	for (int i=0; i < LightCount; i++) {
 		float3 L = normalize(uniforms.lights[i].worldPosition - fragmentIn.worldPosition.xyz);
 		float3 diffuseIntensity = saturate(dot(N, L));
-		float3 H = normalize(L+V);
+		float3 H = normalize(L + V);
 		float specularBase = saturate(dot(N, H));
 		float specularIntensity = powr(specularBase, specularPower);
 		float3 lightColor = uniforms.lights[i].color;
-		lightingColor += 	uniforms.ambientLightColor * baseColor +
-							diffuseIntensity * lightColor * baseColor +
-							specularIntensity * lightColor * specularColor * bumpColor;
+		
+		lightingColor += 	1 * diffuseIntensity * lightColor * baseColor +
+							1 * specularIntensity * lightColor * specularColor * bumpColor;
 	}
 
 	// Calculate our fog
