@@ -24,8 +24,8 @@ class Renderer: NSObject, MTKViewDelegate {
 	var time : Float = 0
 
 	let grid : Grid
-
 	let skyDome : SkyDome
+	let waterSurface : WaterSurface
 
 	var flock : Flock
 	var numberOfMembersInFlock : Int = 1000
@@ -48,6 +48,10 @@ class Renderer: NSObject, MTKViewDelegate {
 		samplerDescriptor.minFilter = .linear
 		samplerDescriptor.magFilter = .linear
 		samplerDescriptor.mipFilter = .linear
+		samplerDescriptor.sAddressMode = .repeat
+		samplerDescriptor.tAddressMode = .repeat
+		samplerDescriptor.rAddressMode = .repeat
+//		samplerDescriptor.maxAnisotropy = 8
 		samplerState = device.makeSamplerState(descriptor: samplerDescriptor)!
 
 		// Create our flock
@@ -57,7 +61,18 @@ class Renderer: NSObject, MTKViewDelegate {
 		grid = Grid(view: view, device: device, size: 20, division: 10)
 		
 		//
-		skyDome = SkyDome(view: view, device: device, radius: 1000, sectorCount: 36, stackCount: 36)
+		skyDome = SkyDome(view: view, device: device, radius: 2000, sectorCount: 36, stackCount: 36)
+		
+		//
+		waterSurface = WaterSurface(view: view, device: device,
+									waterCenter: SIMD3<Float>(0.0, 15.0, 0.0),
+									width: 300.0, widthCount: 50,
+									waterDirectionX: SIMD3<Float>(0.0, 0.0, 1.0),
+									waterDirectionY: SIMD3<Float>(1.0, 0.0, 0.0),
+									waterColor: SIMD3<Float>(0.5, 0.5, 0.5),
+									waterTextureName1: "water6",
+									waterTextureName2: "water2",
+									waterTextureRepeat: 15)
 		
 		//
 		super.init()
@@ -100,9 +115,17 @@ class Renderer: NSObject, MTKViewDelegate {
 				grid.Draw(commandEncoder: commandEncoder)
 			}
 			
-			skyDome.viewMatrix = viewMatrix
-			skyDome.projectionMatrix = projectionMatrix
-			skyDome.Draw(commandEncoder: commandEncoder)
+			if ScenePreference.drawSkyDome {
+				skyDome.viewMatrix = viewMatrix
+				skyDome.projectionMatrix = projectionMatrix
+				skyDome.Draw(commandEncoder: commandEncoder)
+			}
+
+			if ScenePreference.drawWaterSurface {
+				waterSurface.viewMatrix = viewMatrix
+				waterSurface.projectionMatrix = projectionMatrix
+				waterSurface.Draw(commandEncoder: commandEncoder, time: time)
+			}
 
 			// Draw our flocking unit
 			flock.viewMatrix = viewMatrix

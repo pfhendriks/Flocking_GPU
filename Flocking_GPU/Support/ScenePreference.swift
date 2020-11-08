@@ -14,6 +14,8 @@ class ScenePreference{
 	static var clearColor = SIMD3<Double>(0.02, 0.06, 0.2)
 
 	public static var drawGrid: Bool = false
+	public static var drawSkyDome: Bool = true
+	public static var drawWaterSurface: Bool = true
 
 	public static var pauseAnimation : Bool = false
 	

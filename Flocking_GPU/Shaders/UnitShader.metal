@@ -71,7 +71,7 @@ vertex UnitVertexOut Instanced_unit_vertex_main(UnitVertexIn vertexIn [[ stage_i
 	
 	//
 	float body = (p.z + 0.5);
-	p.x = p.x + (vertexIn.position.z)*cos(time + 0.4*body)*0.14;
+	p.x = p.x + (vertexIn.position.z) * cos(time + 0.4 * body) * 0.14;
 	
 	float4 worldPosition = perInstanceUniform.modelMatrix * float4(p, 1);
 	vertexOut.viewSpace = perSceneUniforms.viewMatrix * worldPosition;
@@ -99,15 +99,13 @@ fragment float4 unit_fragment_main(UnitVertexOut fragmentIn [[stage_in]],
     float3 baseColor = baseColorTexture.sample(baseColorSampler, fragmentIn.texCoords).rgb;
 	float  bumpColor = bumpColorTexture.sample(baseColorSampler, fragmentIn.texCoords).r;
 	float3 specularColor(1.0, 1.0, 1.0);
-	float  specularPower(20);
+	float  specularPower(10);
 	
 	float3 N = normalize(fragmentIn.worldNormal.xyz);
 	float3 V = normalize(uniforms.cameraWorldPosition - fragmentIn.worldPosition.xyz);
 
-	float3 lightingColor(0, 0, 0);
-	float3 finalColor(0, 0, 0);
-	
-	lightingColor = 1 * uniforms.ambientLightColor * baseColor;
+	//
+	float3 lightingColor = uniforms.ambientLightColor * baseColor;
 	for (int i=0; i < LightCount; i++) {
 		float3 L = normalize(uniforms.lights[i].worldPosition - fragmentIn.worldPosition.xyz);
 		float3 diffuseIntensity = saturate(dot(N, L));
@@ -116,19 +114,36 @@ fragment float4 unit_fragment_main(UnitVertexOut fragmentIn [[stage_in]],
 		float specularIntensity = powr(specularBase, specularPower);
 		float3 lightColor = uniforms.lights[i].color;
 		
-		lightingColor += 	1 * diffuseIntensity * lightColor * baseColor +
-							1 * specularIntensity * lightColor * specularColor * bumpColor;
+		lightingColor += 	diffuseIntensity * lightColor * baseColor +
+							specularIntensity * lightColor * specularColor * bumpColor;
 	}
 
+	// determine our fog color based on the SkyDome color
+	float3 domeBaseColor(0.02, 0.06, 0.2);
+	float z = -V.y;
+	float factor = 1.0;
+	float f = 0.0;
+	
+	if (z<0) {
+		f = 1.0 + 0.7 * z;
+		factor = f * f * f * f;
+	} else {
+		f = 1 + z;
+		factor = f * f;
+	}
+	float3 fogColor = domeBaseColor * factor;
+	
+	
 	// Calculate our fog
-	float3 fogColor(0.02, 0.06, 0.2);
-	float FogDensity = 0.04;
+	float FogDensity = 0.035;
 	
 	float dist = abs(fragmentIn.viewSpace.z);
-	float fogFactor = 1.0 / exp(dist * FogDensity); // Exponential Fog
-//	float fogFactor = 1.0 / exp( (dist * FogDensity) * (dist * FogDensity));  // Exponential Square Fog
+//	float fogFactor = 1.0 / exp(dist * FogDensity); 							// Exponential Fog
+	float fogFactor = 1.0 / exp( (dist * FogDensity) * (dist * FogDensity) ); 	// Exponential Square Fog
 	fogFactor = clamp( fogFactor, 0.0, 1.0);
 
+	//
+	float3 finalColor(0, 0, 0);
 	if (drawFog) {
 		finalColor = mix(fogColor, lightingColor, fogFactor);
 	} else {

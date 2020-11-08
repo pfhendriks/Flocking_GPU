@@ -181,8 +181,9 @@ class Flock {
 	}
 	
 	func DrawInstanced(commandEncoder: MTLRenderCommandEncoder) {
+		//
 		cameraWorldPosition = viewMatrix.inverse[3].xyz
-
+		
 		let ambientLightColor = SIMD3<Float>(0.02, 0.02, 0.02)
 
 		let lv = Float(0.8)
@@ -214,6 +215,7 @@ class Flock {
 
 		let fishVertexBuffer = unitMesh?.vertexBuffers.first!
 		let submesh = unitMesh!.submeshes[0]
+		commandEncoder.setCullMode(.front)
 		commandEncoder.setVertexBuffer(fishVertexBuffer?.buffer, offset: fishVertexBuffer!.offset, index: 0)
 		commandEncoder.setVertexBuffer(perInstanceVertexUniformsBuffer, offset: 0, index: 1)
 		commandEncoder.setVertexBytes(&sceneVertexUniforms, length: MemoryLayout<UnitSceneVertexUniform>.size, index: 2)

@@ -52,7 +52,7 @@ fragment float4 grid_fragment_shader(GridVertexOut fragmentIn [[stage_in]],
 
 	// Calculate our fog
 	float3 fogColor(0.02, 0.06, 0.2);
-	float FogDensity = 0.150;
+	float FogDensity = 0.025;
 		
 	float dist = abs(fragmentIn.viewSpace.z);
 	float fogFactor = 1.0 / exp(dist * FogDensity);

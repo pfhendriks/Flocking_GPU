@@ -24,6 +24,8 @@
 		BD49F2A4254023D200E38130 /* UnitShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = BD49F2A2254023D200E38130 /* UnitShader.metal */; };
 		BD49F2A92540249900E38130 /* NewFish.obj in Resources */ = {isa = PBXBuildFile; fileRef = BD49F2A82540249900E38130 /* NewFish.obj */; };
 		BD49F2B1254024E100E38130 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD49F2B0254024E100E38130 /* CameraController.swift */; };
+		BD6867B52548C98500C9D464 /* WaterSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6867B42548C98500C9D464 /* WaterSurface.swift */; };
+		BD6867BA2548CF3A00C9D464 /* WaterSurfaceShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = BD6867B92548CF3A00C9D464 /* WaterSurfaceShader.metal */; };
 		BDC6228B25460E2D0000D317 /* SkyDome.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC6228A25460E2D0000D317 /* SkyDome.swift */; };
 		BDC62290254628030000D317 /* SkydomeShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = BDC6228F254628030000D317 /* SkydomeShader.metal */; };
 		BDD9AEC32540470000DC8F90 /* FlockingComputeShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = BDD9AEC22540470000DC8F90 /* FlockingComputeShader.metal */; };
@@ -73,6 +75,8 @@
 		BD49F2A2254023D200E38130 /* UnitShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = UnitShader.metal; sourceTree = "<group>"; };
 		BD49F2A82540249900E38130 /* NewFish.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NewFish.obj; sourceTree = "<group>"; };
 		BD49F2B0254024E100E38130 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		BD6867B42548C98500C9D464 /* WaterSurface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterSurface.swift; sourceTree = "<group>"; };
+		BD6867B92548CF3A00C9D464 /* WaterSurfaceShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = WaterSurfaceShader.metal; sourceTree = "<group>"; };
 		BDC6228A25460E2D0000D317 /* SkyDome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkyDome.swift; sourceTree = "<group>"; };
 		BDC6228F254628030000D317 /* SkydomeShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkydomeShader.metal; sourceTree = "<group>"; };
 		BDD9AEC22540470000DC8F90 /* FlockingComputeShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = FlockingComputeShader.metal; sourceTree = "<group>"; };
@@ -164,6 +168,7 @@
 				BD49F2A2254023D200E38130 /* UnitShader.metal */,
 				BDD9AEC22540470000DC8F90 /* FlockingComputeShader.metal */,
 				BDC6228F254628030000D317 /* SkydomeShader.metal */,
+				BD6867B92548CF3A00C9D464 /* WaterSurfaceShader.metal */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -177,6 +182,7 @@
 				BD49F2952540215E00E38130 /* Unit.swift */,
 				BD49F2842540207500E38130 /* Grid.swift */,
 				BDC6228A25460E2D0000D317 /* SkyDome.swift */,
+				BD6867B42548C98500C9D464 /* WaterSurface.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -355,10 +361,12 @@
 				BD49F2972540215E00E38130 /* Flock.swift in Sources */,
 				BDC62290254628030000D317 /* SkydomeShader.metal in Sources */,
 				BD49F2852540207500E38130 /* Grid.swift in Sources */,
+				BD6867B52548C98500C9D464 /* WaterSurface.swift in Sources */,
 				BD49F28F2540211100E38130 /* ScenePreference.swift in Sources */,
 				BDD9AEC32540470000DC8F90 /* FlockingComputeShader.metal in Sources */,
 				BDD9AECB2540F1B600DC8F90 /* Shader.metal in Sources */,
 				BD49F29D2540224E00E38130 /* InputHandler.swift in Sources */,
+				BD6867BA2548CF3A00C9D464 /* WaterSurfaceShader.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

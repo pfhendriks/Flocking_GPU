@@ -57,6 +57,8 @@ class InputHandler{
 	public static func setKeyPressed(key: UInt16, isOn: Bool) {
 		//
 		if (Int(key) == KEY_CODES.Key_G.rawValue) && (keyList[Int(key)] == false) { ScenePreference.drawGrid = !ScenePreference.drawGrid }
+		if (Int(key) == KEY_CODES.Key_N.rawValue) && (keyList[Int(key)] == false) { ScenePreference.drawSkyDome = !ScenePreference.drawSkyDome }
+		if (Int(key) == KEY_CODES.Key_M.rawValue) && (keyList[Int(key)] == false) { ScenePreference.drawWaterSurface = !ScenePreference.drawWaterSurface }
 		if (Int(key) == KEY_CODES.Key_Space.rawValue) && (keyList[Int(key)] == false) { ScenePreference.pauseAnimation = !ScenePreference.pauseAnimation }
 		if (Int(key) == KEY_CODES.Key_X.rawValue) && (keyList[Int(key)] == false) { ScenePreference.showParameterChanges = !ScenePreference.showParameterChanges }
 		if (Int(key) == KEY_CODES.Key_Z.rawValue) && (keyList[Int(key)] == false) { ScenePreference.showAllParameters = !ScenePreference.showAllParameters }

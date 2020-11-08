@@ -23,8 +23,8 @@ struct DomeFragmentUniforms {
 class SkyDome {
 	private var domeCenter = SIMD3<Float>(0.0, 0.0, 0.0)
 	private var domeRadius : Float
-//	private var domeColor = SIMD3<Float>(1.0, 1.0, 1.0)
-	private var domeColor = SIMD3<Float>(0.02, 0.06, 0.2)
+	private var domeColor    = SIMD3<Float>( 0.02 , 0.06 , 0.2  )
+	private var domeSunColor = SIMD3<Float>( 1.0, 0.969, 0.627)
 
 	var domeVertexBuffer: MTLBuffer!
 	var vertexCount: Int = 0
@@ -141,18 +141,27 @@ class SkyDome {
 		let t : Float = Float(i) / Float(stackCount)
 				
 		// set color
-		var factor : Float = 1.0
-		if (z<0) {
-			let f = 1 + 0.7 * ( z * lengthInv )
-			factor = f * f * f * f
+		var factorBlue : Float = 1.0
+		var factorYel  : Float = 0.0
+		let zSun : Float = 0.95
+		let zTest = z * lengthInv
+		if (zTest<0) {
+			let f = 1 + 0.7 * ( zTest )
+			factorBlue = f * f * f * f
 		} else {
-			let f = 1 + ( z * lengthInv )
-			factor = f * f
+			if (zTest>zSun) {
+				let f = 1 + ( zTest )
+				factorYel  = (zTest - zSun) / ( 1 - zSun)
+				factorBlue = (f * f) * (1 - factorYel)
+			} else {
+				let f = 1 + ( zTest )
+				factorBlue = f * f
+			}
 		}
 		
-		let r : Float = domeColor.x * factor
-		let g : Float = domeColor.y * factor
-		let b : Float = domeColor.z * factor
+		let r : Float = domeColor.x * factorBlue + domeSunColor.x * factorYel
+		let g : Float = domeColor.y * factorBlue + domeSunColor.y * factorYel
+		let b : Float = domeColor.z * factorBlue + domeSunColor.z * factorYel
 
 		// return our calculated values
 		let vertex = [x, z, -y, nx, nz, -ny, r, g, b, s, t]
